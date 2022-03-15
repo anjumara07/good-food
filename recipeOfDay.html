@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Of The Day</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://img.freepik.com/free-photo/delicious-vietnamese-food-including-pho-ga-noodles-spring-rolls-white-table_181624-34062.jpg?size=626&ext=jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #show{
+            width: 50%;
+            height: 450px;
+            margin: auto;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            background-color: white;
+            margin-top: 20px;
+            border-radius: 10px;
+            margin-bottom: 40px;
+            border: 1px solid transparent;
+        }
+        h1{
+            margin-top: 10px;
+            margin-left: 170px;
+            color: green;
+            text-decoration: underline;
+        }
+        #show>img{
+            width: 260px;
+            border-radius: 4px;
+            margin-left: 170px;
+            margin-top: 20px;
+
+        }
+        h3,h4{
+            margin-top: 10px;
+        }
+        h3{
+            color: rgb(201, 17, 17);
+        }
+        #show>div{
+            text-align: center;
+        }
+        button{
+            background-color: green;
+            border: none;
+            width: 150px;
+            height: 30px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="show">
+        <h1>Recipe Of The Day</h1>
+    </div>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    async function getFood(){
+        try{
+            let response = await fetch("https://www.themealdb.com/api/json/v1/1/random.php");
+            let data = await response.json();
+            let meals = data.meals;
+            let food = meals[0];
+            console.log(food)
+            random(food);
+        }catch(err){
+            console.log("error: ",err);
+        }
+    }
+    getFood()
+
+    let item_arr = JSON.parse(localStorage.getItem("CartItem"));
+    document.querySelector("#num").innerHTML = item_arr.length;
+
+    function random(food){
+        let show = document.querySelector("#show");
+        let img = document.createElement("img");
+        img.src = food.strMealThumb;
+        let div = document.createElement("div");
+        let h3 = document.createElement("h3");
+        h3.innerHTML = food.strMeal
+        let price = document.createElement("h4");
+        price.innerHTML = `Price : ${Math.floor(Math.random()*(500-100)+100)}`;
+
+
+        let p = document.createElement("h4");
+
+        let btn = document.createElement("button");
+        btn.innerHTML = "Add To Cart"
+
+        // btn.onclick()
+
+        div.append(h3,price,btn);
+        show.append(img,div);
+    }
+</script>

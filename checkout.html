@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CheckOut</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        #pay{
+            width: 415px;
+            margin: auto;
+            margin-top: 30px;
+        }
+        #pay>input{
+            margin-top: 5px;
+            margin-bottom: 30px;
+        }
+        button{
+            background-color: gray;
+            width: 350px;
+            height: 40px;
+            border: none;
+            border-radius: 4px;
+            margin-left: 40px;
+            font-weight: bold;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="pay">
+        <label for="">Enter Card Number</label><br>
+        <input type="number" id="cardnum" placeholder="Card Number"><br>
+        <label for="">Enter Cardholder Name</label><br>
+        <input type="text" id="name" placeholder="Enter Name"><br>
+        <label for="">Enter Expiry Date</label><br>
+        <input type="date" id="date"><br>
+        <label for="">Enter CVV</label><br>
+        <input type="text" id="cvv" placeholder="CVV"><br>
+        <button>Pay</button>
+    </div>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    document.querySelector("button").addEventListener("click",function(){
+        window.location.href = "thanks.html"
+    })
+</script>

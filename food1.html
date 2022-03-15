@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://i.ytimg.com/vi/BEyloCJlpm0/maxresdefault.jpg");
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+        }
+        #show{
+            display: flex;
+            width: 55%;
+            height: 400px;
+            margin: auto;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            background-color: white;
+            margin-top: 50px;
+            border-radius: 10px;
+        }
+        #show>img{
+            width: 350px;
+            height: 300px;
+            margin: 40px;
+            border-radius: 4px;
+        }
+        #show>div{
+            margin-top: 40px;
+        }
+        h3{
+            margin-bottom: 10px;
+            color: green;
+            text-decoration: underline;
+        }
+        h4{
+            margin-top: 10px;
+        }
+        button{
+            background-color: green;
+            border: none;
+            width: 150px;
+            height: 30px;
+            border-radius: 4px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="show"></div>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    let item_arr = JSON.parse(localStorage.getItem("CartItem")) || [];
+    document.querySelector("#num").innerHTML = item_arr.length
+
+    let food = JSON.parse(localStorage.getItem("foodShow1"))
+
+    let show = document.querySelector("#show");
+    let img = document.createElement("img");
+    img.src = food.strCategoryThumb;
+    let div = document.createElement("div");
+    let h3 = document.createElement("h3");
+    h3.innerHTML = food.strCategory
+    let p = document.createElement("p");
+    p.innerHTML = food.strCategoryDescription;
+    let price = document.createElement("h4");
+    price.innerHTML = `Price : ${Math.floor(Math.random()*(500-100)+100)}`;
+
+    let btn = document.createElement("button");
+    btn.innerHTML = "Add To Cart"
+
+    let obj = {
+        name: food.strCategory,
+        price: Math.floor(Math.random()*(500-100)+100),
+        pic: food.strCategoryThumb
+    }
+    btn.addEventListener("click",function(){
+            addCart(obj);
+    });
+
+    div.append(h3,price,btn);
+    show.append(img,div);
+
+    function addCart(item)
+    {
+        item_arr.push(item);
+        localStorage.setItem("CartItem",JSON.stringify(item_arr));
+        document.querySelector("#num").innerHTML = item_arr.length
+    }
+</script>

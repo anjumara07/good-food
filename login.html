@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://img.freepik.com/free-photo/street-food-people-shopping-festival-blur-background_43029-331.jpg?size=626&ext=jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #loginForm{
+            width: 25%;
+            margin: auto;
+            margin-top: 40px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            border-radius: 4px;
+        }
+        #loginForm>input{
+            margin-left: 50px;
+            margin-top: 20px;
+            width: 200px;
+            border-radius: 4px;
+            height: 25px;
+            border: none;
+            border-bottom: 2px solid rgb(199, 64, 23);
+        }
+        #btn{
+            background-color: rgb(199, 64, 23);
+            width: 140px;
+            height: 35px;
+            border-radius: 10px;
+            margin-left: 85px;
+            font-weight: bolder;
+            font-size: 17px;
+            margin-bottom: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <form action="" id="loginForm">
+        <input id="username-login" type="text" placeholder="Enter User Name" required>
+        <br><br>
+        <input id="password-login" type="text" placeholder="Enter Password" required>
+        <br><br>
+        <input id="btn" type="submit">
+    </form>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    document.querySelector("#loginForm").addEventListener("submit",login);
+
+    async function login(event){
+        try{
+            event.preventDefault()
+            var login_data = {
+            username:document.getElementById("username-login").value,
+            password:document.getElementById("password-login").value
+        }
+
+        login_data = JSON.stringify(login_data);
+        }catch(error){
+            console.log("error:",error);
+        }
+
+        let login_url = `https://masai-api-mocker.herokuapp.com/auth/login`
+        let response = await fetch(login_url,{
+            method:"POST",
+            body:login_data,
+            headers:{
+                "Content-Type": "application/json",
+            },
+        });
+
+        let data = await response.json();
+        // console.log("data:",data);
+
+        let username = document.getElementById("username-login").value;
+        getUser(username,data.token);
+    }
+
+    async function getUser(username,token){
+        let api = `https://masai-api-mocker.herokuapp.com/user/${username}`
+
+        let response = await fetch(api,{
+            headers:{
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${token}`,
+            },
+        });
+
+        let data = await response.json();
+        alert("Login Successfull")
+        window.location.href = "home.html";
+        console.log("data:",data);
+    }
+</script>

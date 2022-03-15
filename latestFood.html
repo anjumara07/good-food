@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Latest Food</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://www.visionkl.com/wp-content/uploads/2020/10/blur-CHICKEN-RICE-2.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #show{
+            display: grid;
+            grid-template-columns: repeat(4,1fr);
+            grid-gap: 10px;
+            margin-top: 50px;
+        }
+        #show>div{
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 20px;
+            background-color: white;
+        }
+        #show>div:hover{
+            transform: scale(1.1);
+        }
+        #show>div>img{
+            width: 70%;
+            border-radius: 4px;
+        }
+        h3{
+            color:rgb(187, 14, 14);
+        }
+        button{
+            background-color: green;
+            border: none;
+            width: 150px;
+            height: 30px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="show"></div>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    async function getFood(){
+        try{
+            let response = await fetch("https://www.themealdb.com/api/json/v1/1/search.php?f=a");
+            let data = await response.json();
+            let meals = data.meals;
+            console.log(meals);
+            latest(meals)
+        }catch(err){
+            console.log("error: ",err);
+        }
+    }
+    getFood()
+
+    let item_arr = JSON.parse(localStorage.getItem("CartItem"));
+    document.querySelector("#num").innerHTML = item_arr.length
+
+    let show = document.querySelector("#show");
+    function latest(food){
+        show.innerHTML = "";
+        food.map(function(elem){
+            let div = document.createElement("div");
+
+            let show = document.querySelector("#show");
+            let img = document.createElement("img");
+            img.src = elem.strMealThumb;
+            let h3 = document.createElement("h3");
+            h3.innerHTML = elem.strMeal
+            let price = document.createElement("h4");
+            price.innerHTML = `Price : ${Math.floor(Math.random()*(500-100)+100)}`;
+
+            let p = document.createElement("h4");
+
+            let btn = document.createElement("button");
+            btn.innerHTML = "Add To Cart"
+
+            div.append(img,h3,price,btn);
+            show.append(div);
+        })
+    }
+</script>

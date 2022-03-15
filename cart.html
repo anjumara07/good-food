@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cart</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://t4.ftcdn.net/jpg/02/29/59/11/240_F_229591141_WKDxF3F38J30SASjsVguloVj2SgXCAgY.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+            text-align: center;
+        }
+        #cartShow{
+            margin: auto;
+            width: 40%;
+            margin-top: 20px;
+        }
+        #cartShow img{
+            width: 40%;
+        }
+        #flex>div:first-child{
+            margin-left: 50px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #flex{
+            display: flex;
+            justify-content: space-between;
+            background-color: white;
+            margin-bottom: 10px;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            border-radius: 4px;
+        }
+        button{
+            background-color: red;
+            border: none;
+            width: 80px;
+            height: 25px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        #out{
+            background-color: gray;
+            border: none;
+            width: 300px;
+            height: 40px;
+            border-radius: 4px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        h1{
+            text-decoration: underline;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="cartShow"></div>
+    <h1>TOTAL : <span></span></h1>
+    <button id="out">PLACE ORDER</button>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    let item_arr = JSON.parse(localStorage.getItem("CartItem"));
+    display(item_arr)
+
+    var total = 0;
+    function display(item_arr){
+        document.querySelector("#num").innerHTML = item_arr.length
+        var cartShow = document.getElementById("cartShow");
+        cartShow.innerHTML = "";
+        item_arr.map(function(elem,index){
+            let div = document.createElement("div");
+            let div1 = document.createElement("div");
+            let div2 = document.createElement("div");
+
+            let name = document.createElement("h3")
+            name.innerHTML = `DISH : ${elem.name}`;
+            name.style.color = "green";
+
+            let price = document.createElement("p");
+            price.innerHTML = `PRICE : ${elem.price}`
+
+            let btn = document.createElement("button");
+            btn.innerHTML = "DELETE";
+
+            let img = document.createElement("img")
+            img.src = elem.pic;
+
+            btn.addEventListener("click",function(){
+                del(index)
+            });
+            div1.append(name,price,btn);
+            div2.append(img);
+            div.append(div1,div2);
+            div.setAttribute("id","flex")
+            cartShow.append(div)
+        })
+        total = item_arr.reduce(function(acc,curr){
+            return acc+curr.price;
+        },0)
+        let ttl = document.querySelector("span");
+        ttl.innerHTML = total
+    }
+
+    function del(index)
+    {
+        item_arr.splice(index,1)
+        let cartShow = document.querySelector("#cartShow").innerHTML = "";
+        localStorage.setItem("CartItem",JSON.stringify(item_arr));
+        display(item_arr);
+    }
+
+    document.getElementById("out").addEventListener("click",order);
+
+    function order(){
+        window.location.href = "checkout.html";
+    }
+</script>

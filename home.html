@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Good Food</title>
+    <link rel="stylesheet" href="/styles/navbar.css">
+    <script src="https://kit.fontawesome.com/6fa3bd69d6.js" crossorigin="anonymous"></script>
+    <style>
+        body{
+            background-image: url("https://www.visionkl.com/wp-content/uploads/2020/10/blur-CHICKEN-RICE-2.jpg");
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        #carousel{
+            width: 70%;
+            height: 350px;
+            margin: auto;
+            margin-top: 10px;
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            border-radius: 5px;
+        }
+        #carousel>img{
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+        }
+        #showFood{
+            display: grid;
+            grid-template-columns: repeat(4,23%);
+            grid-gap: 20px;
+            margin-top: 20px;
+            margin-left: 35px;
+        }
+        #showFood>div{
+            box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+            text-align: center;
+            padding: 10px;
+            border-radius: 10px;
+            background-color: white;
+        }
+        #showFood>div>img{
+            width: 70%;
+        }
+        #showFood>div:hover{
+            transform: scale(1.1);
+        }
+        #see{
+            width: 414px;
+            height: 205px;
+            position: absolute;
+            top: 65px;
+            left: 243px;
+        }
+        #see>div{
+            background-color: white;
+            box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+            height: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div id="nav"></div>
+    <div id="see"></div>
+    <div id="carousel"></div>
+    <div id="showFood"></div>
+</body>
+</html>
+
+<script type="module">
+    import navbar from './component/navbar.js'
+    import {getFood,searchFood} from './script/getFood.js'
+
+    let food_waiting;
+    let search_div = document.getElementById("see");
+
+    //navbar
+    let nav = document.querySelector("#nav");
+    nav.innerHTML = navbar();
+
+    // carousel
+    let carouselFood = ["https://f.vividscreen.info/soft/b26d767db99f758c557ce17068bf0e9f/Fast-Food-Burgers-1920x1200.jpg",
+                        "https://images.all-free-download.com/images/graphicthumb/food_picture_03_hd_pictures_167556.jpg",
+                        "https://ntbrand-wp.s3.amazonaws.com/livent/wp-content/uploads/2018/08/13155151/SearchFX2_5b229dafac40a9f608232bc8-e1534189919644.jpeg",
+                        "https://c4.wallpaperflare.com/wallpaper/205/168/868/dinner-food-pie-pizza-wallpaper-preview.jpg"]
+
+    let div = document.querySelector("#carousel");
+    div.innerHTML = null;
+    let img = document.createElement("img");
+    img.src = carouselFood[0];
+    div.append(img);
+
+    let i=1; 
+    setInterval(function(){
+        if(i===carouselFood.length)
+        {
+            i=0;
+        }
+        img.src = carouselFood[i];
+        div.append(img);
+        i++
+    },3000);
+
+    async function food(){
+        let foodItem = await getFood()
+        let category = foodItem.categories;
+        appendFood(category)
+    }
+    food()
+
+    let item_arr = JSON.parse(localStorage.getItem("CartItem"));
+    document.querySelector("#num").innerHTML = item_arr.length
+
+    // searchFood
+    let input = document.getElementById("search-food");
+
+    input.addEventListener('input',function(){
+        debounce(search,500);
+    })
+
+    async function search(){
+        let food = input.value;
+        if(food.length <= 0){
+            search_div.innerHTML = null;
+            search_div.style.display = "none";
+            return false;
+        }
+        let foodItem = await searchFood(food);
+        let meals = foodItem.meals;
+        closure(meals);
+        // console.log(meals)
+    }
+
+    input.addEventListener('keypress',aa);
+    async function aa(event){
+        let food = input.value;
+        let foodItem = await searchFood(food);
+        let meals = foodItem.meals;
+        if(event.key == 'Enter'){
+        sFood(meals);
+        search_div.innerHTML = null;
+        search_div.style.display = "none";
+        }
+    }
+
+    // debounce
+    function debounce(func,delay){
+
+        if(food_waiting){
+            clearTimeout(food_waiting)
+        }
+
+        food_waiting = setTimeout(function(){
+            func();
+        },delay);
+    }
+
+    // closure
+    function closure(meal){
+        console.log(meal);
+        search_div.innerHTML = null;
+        search_div.style.display = "block";
+        search_div.style.overflow = "auto"
+        if(meal===undefined){
+            return false;
+        }
+        meal.forEach(function(element){
+            let div = document.createElement("div");
+            let name = document.createElement("p");
+            name.innerHTML = element.strMeal;
+            div.append(name)           
+            search_div.append(div);
+            div.onclick = () =>{
+                showF(element)
+            }
+        })
+    }
+
+    // default Items
+    let show = document.querySelector("#showFood");
+    function appendFood(food){
+        show.innerHTML = "";
+        food.map(function(elem){
+            let div = document.createElement("div");
+            let img = document.createElement("img");
+            img.src = elem.strCategoryThumb;
+            let name = document.createElement("h3");
+            name.innerHTML = elem.strCategory;
+            
+            div.append(img,name);
+            show.append(div);
+
+            div.onclick = () =>{
+                showF1(elem)
+            }
+        })
+    }
+
+    // search Item
+    function sFood(food){
+        show.innerHTML = "";
+        food.map(function(elem){
+            let div = document.createElement("div");
+            let img = document.createElement("img");
+            img.src = elem.strMealThumb;
+            let name = document.createElement("h3");
+            name.innerHTML = elem.strMeal;
+            
+            div.append(img,name);
+            show.append(div);
+
+            let price = document.createElement("p");
+            price.innerHTML = `Price : ${Math.floor(Math.random()*(500-100)+100)}`;
+
+            div.onclick = () =>{
+                showF(elem)
+            }
+        })
+    }
+
+    function showF(foods){
+        localStorage.setItem("foodShow",JSON.stringify(foods));
+        window.location.href = "food.html";
+    }
+    function showF1(foods1){
+        localStorage.setItem("foodShow1",JSON.stringify(foods1));
+        window.location.href = "food1.html";
+    }
+
+</script>
