@@ -1,7 +1,7 @@
 function navbar(){
     return`<div id="navbar">
     <div id="logo">
-        <a href="/home.html">
+        <a href="/index.html">
             <img src="https://st4.depositphotos.com/4525103/29157/v/950/depositphotos_291573524-stock-illustration-orange-logo-template-good-food.jpg" alt="" style="border-radius: 50%" width="100%" height="100%">
         </a>
     </div>
